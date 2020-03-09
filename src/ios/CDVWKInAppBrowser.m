@@ -128,6 +128,14 @@ static CDVWKInAppBrowser* instance = nil;
     CDVInAppBrowserOptions* browserOptions = [CDVInAppBrowserOptions parseOptions:options];
     
     WKWebsiteDataStore* dataStore = [WKWebsiteDataStore defaultDataStore];
+ 
+    //Copy cookies from app to the inAppBrowser
+    WKHTTPCookieStore* cookieStore = dataStore.httpCookieStore;
+
+    for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
+        [cookieStore setCookie:cookie completionHandler:^{NSLog(@"Copied cookie to webview");}];
+    }
+ 
     if (browserOptions.cleardata) {
         
         NSDate* dateFrom = [NSDate dateWithTimeIntervalSince1970:0];
